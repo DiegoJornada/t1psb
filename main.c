@@ -3,12 +3,11 @@
 void set(int *arr,int index);
 int leds(int on, int blink);
 int verify(int *t, int *pswd);
-void init(void);
-void play(void);
+void init(int *pswd);
+int play(int *pswd);
 
 int main(){
 	int password[] = {0, 0, 0, 0};
-	int try[] = {0 ,0 ,0 ,0};
 
 	initTimer();
 
@@ -21,19 +20,23 @@ int main(){
 	espera(500);
 	LCDcomando(0xc0);
 
-	init();
+	init(&password);
 
 	LCDcomando(1);
 	LCDputs("SENHA SALVA");
 	espera(500);
-
-	if(play() < 10) LCDputs("You Win!");
-	else LCDputs("You Loose");
-
-	LCDcomando(1);
-	espera(500);
 	LCDcomando(1);
 
+
+	if(play( &password) < 10) {
+	  LCDcomando(1);
+	  LCDputs("#!Voce Ganhou!!#");
+	}else{
+	  LCDcomando(1);
+	  LCDputs("Voce Perdeu!");
+	}
+
+	espera(2000);
 	return 0;
 }
 
@@ -55,7 +58,7 @@ int leds(int on, int blink){
 	else if(on == 2)	FIO4CLR = 0xC0;
 
 	else if(on == 1)	FIO4CLR = 0x80;
-
+	
 	return 0;
 }
 
@@ -67,10 +70,12 @@ int verify(int *t, int *pswd){
 	if(right < 4){
 		for(i ; i<4; i++){
 			int j=0;
-			for(j ; j<4;i++){
+			for(j ; j<4;j++){
 				if(t[i] == pswd[j]){
-					if(i==j) right++
-					else wrong++;
+					if(i==j) 
+					  right++;
+					else
+					  wrong++;
 					break;
 				}
 			}
@@ -79,51 +84,58 @@ int verify(int *t, int *pswd){
 	return leds(right, wrong);
 }
 
-void init(void){
+void init(int *pswd){
 	LCDputs("SENHA: 0000");
 	while(1){
 		if(!(FIO4PIN & 0x100)){
-			set(&password,0);
+			set(pswd,0);
 		} 
 		if(!(FIO4PIN & 0x200)) {
-			set(&password,1);	
+			set(pswd,1);	
 		} 
 		if(!(FIO4PIN & 0x400)) {
-			set(&password,2);	
+			set(pswd,2);	
 		} 
 		if(!(FIO4PIN & 0x800)) {
-			set(&password,3);	
+			set(pswd,3);	
 		} 
 		if(!(FIO4PIN & 0x1000)) break; 
 	}
 }
-int play(void){
-	int lives=0;
-	LCDputchar('#');
-	LCDcomando(0xC0);
-	LCDputs("       0000");
-	while(lives < 10){
-		LCDcomando(0x80 + 1);
-		LCDputchar('0' + lives);
-		if(!(FIO4PIN & 0x100)){
-			set(t,0);	
-		} 
-		if(!(FIO4PIN & 0x200)) {
-			set(t,1);	
-		} 
-		if(!(FIO4PIN & 0x400)) {
-			set(t,2);	
-		} 
-		if(!(FIO4PIN & 0x800)) {
-			set(t,3);	
-		} 
-		if(!(FIO4PIN & 0x1000)){
-			espera(300);
-			if(verify(t,&password) == 1) break;
-			lives++;
-		}  
-	}
-	return lives;
+/*
+
+a=111000
+b=000010
+fio4pin=a|fio4pin^br
+
+*/
+
+
+int play(int *pswd){
+		int try[] = {0,0,0,0};
+		int lives=0;
+		LCDputchar('#');
+		LCDcomando(0xC0);
+		LCDputs("       0000");
+		while(lives < 10){
+				LCDcomando(0x80 + 1);
+				LCDputchar('0' + lives);
+				if(!(FIO4PIN & 0x100)){
+						set(&try,0);	
+				}if(!(FIO4PIN & 0x200)) {
+						set(&try,1); 
+				}if(!(FIO4PIN & 0x400)) {
+						set(&try,2);	
+				}if(!(FIO4PIN & 0x800)) {
+						set(&try,3);	
+				}if(!(FIO4PIN & 0x1000)){
+						espera(300);
+						if(verify(&try,pswd) == 1)
+										break;
+						lives++;
+				}  
+		}
+		return lives;
 }
 
 void UNDEF_Routine(){
