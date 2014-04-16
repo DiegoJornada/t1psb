@@ -43,7 +43,9 @@ int main(){
 
 void set(int *arr,int index){
   if(arr[index] == 9) arr[index] = 0;
+
   else arr[index] = arr[index]+1;
+
   LCDcomando(0xC0 + (index+7));
   LCDputchar('0' + arr[index]);
   espera(200);
@@ -54,11 +56,11 @@ int leds(int on, int blink){
 	FIO4CLR = 0xF0;
 	return 1;
   }
-  else if(on == 3)	FIO4CLR = 0xE0;
+  else if(on == 3) FIO4CLR = 0xE0;
 
-  else if(on == 2)	FIO4CLR = 0xC0;
+  else if(on == 2) FIO4CLR = 0xC0;
 
-  else if(on == 1)	FIO4CLR = 0x80;
+  else if(on == 1) FIO4CLR = 0x80;
 
   return 0;
 }
@@ -73,7 +75,9 @@ int verify(int *t, int *pswd){
 	for(j ; j<4;j++){
 	  if(t[i] == pswd[j]){
 		if(i==j) right++;
+
 		else wrong++;
+
 		break;
 	  }
 	}
@@ -84,27 +88,23 @@ int verify(int *t, int *pswd){
 void init(int *pswd){
   LCDputs("SENHA: 0000");
   while(1){
-	if(!(FIO4PIN & 0x100)){
-	  set(pswd,0);
-	} 
-	if(!(FIO4PIN & 0x200)) {
-	  set(pswd,1);	
-	} 
-	if(!(FIO4PIN & 0x400)) {
-	  set(pswd,2);	
-	} 
-	if(!(FIO4PIN & 0x800)) {
-	  set(pswd,3);	
-	} 
+	if(!(FIO4PIN & 0x100)) set(pswd,0);
+
+	if(!(FIO4PIN & 0x200)) set(pswd,1); 
+
+	if(!(FIO4PIN & 0x400)) set(pswd,2); 
+
+	if(!(FIO4PIN & 0x800)) set(pswd,3);
+
 	if(!(FIO4PIN & 0x1000)) break; 
   }
 }
+
 /*
    a=111000
    b=000010
    fio4pin=a|fio4pin^br
 */
-
 
 int play(int *pswd){
   int try[] = {0,0,0,0};
@@ -115,13 +115,13 @@ int play(int *pswd){
   while(lives < 10){
 	LCDcomando(0x80 + 1);
 	LCDputchar('0' + lives);
-	if(!(FIO4PIN & 0x100)) set(&try,0);	
+	if(!(FIO4PIN & 0x100)) set(try,0);	
 
-	if(!(FIO4PIN & 0x200)) set(&try,1); 
+	if(!(FIO4PIN & 0x200)) set(try,1); 
 
-	if(!(FIO4PIN & 0x400)) set(&try,2);	
+	if(!(FIO4PIN & 0x400)) set(try,2);	
 
-	if(!(FIO4PIN & 0x800))set(&try,3);	
+	if(!(FIO4PIN & 0x800)) set(try,3);	
 
 	if(!(FIO4PIN & 0x1000)){
 	  espera(300);
