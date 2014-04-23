@@ -57,7 +57,7 @@ void set(int *arr,int index){
 	 LCDputchar('0' + arr[index]);
 }
 int ledAux(int n){
-	 if(n == 4 )	return 0xF0;
+	 if(n == 4 ) return 0xF0;
 
 	 else if(n == 3) return 0xE0;
 
@@ -84,23 +84,41 @@ void leds(){
 void verify(int *t, int *pswd){
 	 RIGHT = 0;
 	 WRONG = 0;
-
-	 if(t[0] == pswd[0]) RIGHT++;
-	 if(t[1] == pswd[1]) RIGHT++;
-	 if(t[2] == pswd[2]) RIGHT++;
-	 if(t[3] == pswd[3]) RIGHT++;
+	 int m[] = {0,0,0,0};
+	 
+	 if(t[0] == pswd[0]){
+			m[0] = 1;
+			RIGHT++;
+	 }
+	 
+	 if(t[1] == pswd[1]){
+			m[1] = 1;
+			RIGHT++;
+	 }
+	 
+	 if(t[2] == pswd[2]){
+			m[2] = 1;
+			RIGHT++;
+	 }
+	 
+	 if(t[3] == pswd[3]){
+			m[3] = 1;
+			RIGHT++;
+	 }
+	 
 	 int aux = 0;
-	 int i= 0;
+	 int i = 0;
 	 for(i ; i<4; i++){
 			int j=0;
-			for(j ; j<4;j++){
-				 if(t[i] == pswd[j]){
+			for(j;j<4;j++){
+				 if(t[i] == pswd[j] && m[j] != 1 && m[i] != 1){
+						m[j] = 1;
 						aux++;
 						break;
 				 }
 			}
 	 }
-	 WRONG = aux - RIGHT; 
+	 WRONG = aux; 
 }
 
 void init(int *pswd){
