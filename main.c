@@ -84,41 +84,19 @@ void leds(){
 void verify(int *t, int *pswd){
 	 RIGHT = 0;
 	 WRONG = 0;
-	 int m[] = {0,0,0,0};
-	 
-	 if(t[0] == pswd[0]){
-			m[0] = 1;
-			RIGHT++;
-	 }
-	 
-	 if(t[1] == pswd[1]){
-			m[1] = 1;
-			RIGHT++;
-	 }
-	 
-	 if(t[2] == pswd[2]){
-			m[2] = 1;
-			RIGHT++;
-	 }
-	 
-	 if(t[3] == pswd[3]){
-			m[3] = 1;
-			RIGHT++;
-	 }
-	 
-	 int aux = 0;
 	 int i = 0;
+	 int m[] = {0, 0, 0, 0};
 	 for(i ; i<4; i++){
 			int j=0;
 			for(j;j<4;j++){
-				 if(t[i] == pswd[j] && m[j] != 1 && m[i] != 1){
+				 if(t[i] == pswd[j] && m[j] != 1){
+						if(i==j)	RIGHT++;
+						else WRONG++;
 						m[j] = 1;
-						aux++;
 						break;
 				 }
 			}
 	 }
-	 WRONG = aux; 
 }
 
 void init(int *pswd){
@@ -140,12 +118,18 @@ void init(int *pswd){
 int play(int *pswd){
 	 int try[] = {0,0,0,0};
 	 int lives=1;
-	 LCDputchar('#');
+	 LCDputs("#0");
 	 LCDcomando(0xC0);
 	 LCDputs("       0000");
 	 while(lives < 11){
-			LCDcomando(0x80 + 1);
-			LCDputchar('0' + lives);
+			LCDcomando(0x80 + 2);
+			if(lives != 10)LCDputchar('0' + lives);
+			else {
+				 LCDcomando(0x80 + 1);
+				 LCDputchar('0' + 1);
+				 LCDcomando(0x80 + 2);
+				 LCDputchar('0' + 0);
+			}
 			if(!(FIO4PIN & 0x100)) set(try,0);	
 
 			if(!(FIO4PIN & 0x200)) set(try,1); 
