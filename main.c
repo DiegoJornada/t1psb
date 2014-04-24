@@ -22,14 +22,14 @@ int main(){
 
 	 LCDinit();
 
-	 LCDputs("##MASTER MIND!##");
+	 LCDputs("  MASTER MIND!  ");
 
 	 LCDcomando(0xC0);
-	 
+
 	 init(password);
-	 
+
 	 LCDcomando(1);
-	 LCDputs("##SENHA SALVA##");
+	 LCDputs("  SENHA SALVA  ");
 	 LCDcomando(0xC0);
 	 LCDputs("  SW5:CONTINUA  ");
 
@@ -38,9 +38,10 @@ int main(){
 	 LCDcomando(1);
 
 	 if(play(password) <= 10) {
+			FIO4SET = 0XFF;
 			LCDcomando(1);
-			LCDputs("#Voce Ganhou!o/#");
-	 		FIO4SET = 0XFF;
+			LCDputs(" Voce Ganhou!o/ ");
+			FIO4SET = 0XFF;
 			win();
 
 	 }else{
@@ -49,7 +50,7 @@ int main(){
 			LCDputs("Voce Perdeu!:(");
 	 }
 	 LCDcomando(0xC0);
-	 LCDputs("  SW5:REINICIA  ");
+	 LCDputs(" SW5 : REINICIA");
 
 	 pause();
 
@@ -57,10 +58,10 @@ int main(){
 }
 int countZero(int *arr){
 	 int i, count=0;
-	for(i=0;i<4;i++)
-		 if(arr[i]==0)
-				count++;
-	return count;
+	 for(i=0;i<4;i++)
+			if(arr[i]==0)
+				 count++;
+	 return count;
 }
 void init(int *pswd){
 	 LCDputs("SENHA: 0000");
@@ -110,12 +111,10 @@ int next(int *ac, int v){
 	 if(ac[v] == 0 ) return v;
 	 v+=1;
 	 if(v > 9) v=0;
-	 /*LCDputchar('0' + v);*/
 	 return next(ac,v);
 }
 void set(int *arr,int index, int *ac){
 	 int val = arr[index];
-	 /*LCDputchar('0' + v);*/
 	 int n = next(ac, val);
 	 ac[val] = 0;
 	 ac[n] = 1;
@@ -149,40 +148,21 @@ int howManyLeds(int n){
 
 	 else if(n == 1) return 0x80;
 
-	 return 0x00;
+	 return 0;
 
 }
 
 void verify(int *t, int *pswd){
 	 RIGHT = 0;
 	 WRONG = 0;
-	 
-	 int m[] = {0, 0, 0, 0};
-	 
-	 if(t[0] == pswd[0]){
-			RIGHT++;
-			m[0] = 1;
-	 }
-	 if(t[1] == pswd[1]){
-			RIGHT++;
-			m[1]=1;
-	 }
-	 if(t[2] == pswd[2]){
-			RIGHT++;
-			m[2]=1;
-	 }
-	 if(t[3] == pswd[3]){
-			RIGHT++;
-			m[3]=1;
-	 }
 
 	 int i;
 	 for(i=0 ; i<4; i++){
 			int j;
 			for(j=0;j<4;j++){
-				 if(t[i] == pswd[j] && m[j] != 1){
-						m[j] = 1;
-						WRONG++;
+				 if(t[i] == pswd[j]){
+						if(i == j) RIGHT++;
+						else WRONG++;
 						break;
 				 }
 			}
@@ -209,10 +189,10 @@ void pause(){
 void win(){
 	 int i;
 	 for(i=0; i<3; i++){
-	 	FIO4CLR = 0XFF;
-		espera(500);
-	 	FIO4SET = 0XFF;
-		espera(500);
+			FIO4CLR = 0XFF;
+			espera(500);
+			FIO4SET = 0XFF;
+			espera(500);
 	 }
 }
 void UNDEF_Routine(){
