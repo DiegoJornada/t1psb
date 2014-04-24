@@ -18,7 +18,6 @@ Por exemplo, supondo que a senha introduzida no início foi 1985:
     Tentativa 3: jogador experimenta 1985
         4 dígitos em posição correta, 0 em posição incorreta: Acende os quatro LEDs mais à esquerda.
 
-
 Essa implementação não permite que a senha "Mestra" tenha dígitos repetidos
 
 Jogo foi Apresentado em 2014-04-24 
