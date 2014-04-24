@@ -6,7 +6,8 @@
 #Configuracoes especificas deste projeto
 SERIALDEV = /dev/ttyS0
 CLOCKFREQ = 12000
-TARGET = a04_timer
+#TARGET = a04_timer
+TARGET = t1_psb
 MODULOS = main.o crt.o lcd.o
 TERMINAL = ltser
 BAUDRATE=19200

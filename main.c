@@ -22,13 +22,13 @@ int main(){
 
     LCDputs("##MASTER MIND!##");
 
-    espera(500);
+    pause();
     LCDcomando(0xC0);
 
     init(password);
 
     LCDcomando(1);
-    LCDputs(" #SENHA SALVA  ");
+    LCDputs("##SENHA SALVA##");
     LCDcomando(0xC0);
     LCDputs("  SW5:CONTINUA  ");
 
@@ -37,10 +37,11 @@ int main(){
     espera(1000);
     LCDcomando(1);
 
-    if(play(password) < 10) {
+    if(play(password) <= 10) {
         LCDcomando(1);
-        LCDputs("#Voce Ganhou\o/#");
+        LCDputs("#Voce Ganhou\\o/#");
     }else{
+    	FIO4SET = 0xFF;	
         LCDcomando(1);
         LCDputs("Voce Perdeu!:(");
     }
@@ -70,7 +71,7 @@ void init(int *pswd){
 int play(int *pswd){
     int try[] = {0,0,0,0};
     int lives=1;
-    LCDputs("#0");
+    LCDputs("TENTATIVA #0");
     LCDcomando(0xC0);
     LCDputs("       0000");
     while(lives < 11){
@@ -125,21 +126,36 @@ int howManyLeds(int n){
 
     else if(n == 1) return 0x80;
 
-    else if(n == 0) return 0x00;
+    return 0x00;
 
 }
 
 void verify(int *t, int *pswd){
     RIGHT = 0;
     WRONG = 0;
-    int i = 0;
     int m[] = {0, 0, 0, 0};
-    for(i ; i<4; i++){
-        int j=0;
-        for(j;j<4;j++){
+    if(t[0] == pswd[0]){
+	    RIGHT++;
+	    m[0] = 1;
+    }
+    if(t[1] == pswd[1]){
+	    RIGHT++;
+	    m[1]=1;
+    }
+    if(t[2] == pswd[2]){
+	    RIGHT++;
+	    m[2]=1;
+    }
+    if(t[3] == pswd[3]){
+	    RIGHT++;
+	    m[3]=1;
+    }
+    int i;
+    for(i=0 ; i<4; i++){
+        int j;
+        for(j=0;j<4;j++){
             if(t[i] == pswd[j] && m[j] != 1){
-                if(i==j) RIGHT++;
-                else WRONG++;
+                WRONG++;
                 m[j] = 1;
                 break;
             }
@@ -148,12 +164,12 @@ void verify(int *t, int *pswd){
 }
 
 void tryNumber(int l){
-    LCDcomando(0x80 + 2);
-    if(lives != 10) LCDputchar('0' + l);
+    LCDcomando(0x80 + 11);
+    if(l != 10) LCDputchar('0' + l);
     else {
-        LCDcomando(0x80 + 1);
+        LCDcomando(0x80 + 11);
         LCDputchar('0' + 1);
-        LCDcomando(0x80 + 2);
+        LCDcomando(0x80 + 12);
         LCDputchar('0' + 0);
     }
 }
